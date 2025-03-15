@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://MasterJi27.github.io/sb2",
+  "homepage": "https://MasterJi27.github.io/sb22",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
