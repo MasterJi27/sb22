@@ -1,13 +1,30 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, FormEvent } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Github, Linkedin, Mail, ArrowUpRight, Terminal, Server, Database, Code, Cpu, Network, FileText, Menu, X } from 'lucide-react';
+import { Github, Linkedin, Mail, ArrowUpRight, Terminal, Server, Database, Code, Cpu, Network, FileText, Menu, X, Phone } from 'lucide-react';
 import { FloatingShapes } from './components/FloatingShapes';
+import emailjs from '@emailjs/browser';
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  // Fetch LinkedIn profile data
+  const [profileData, setProfileData] = useState({
+    name: "Raghav Kathuria",
+    title: "Cloud & DevOps Engineer",
+    location: "India",
+    phone: "+91 7011933060",
+    whatsapp: "+91 7011933060"
+  });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -17,6 +34,41 @@ function App() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.send(
+        'service_lgba6rh',
+        'template_mezf2a9',
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          to_email: 'Raghavkathuria69@outlook.com'
+        },
+        'vBw_4CiOoJDdGlAVD'
+      );
+
+      toast.success('Message sent successfully!');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      toast.error('Failed to send message. Please try again.');
+      console.error('Email error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const navigationItems = [
     ['About', 'about'],
@@ -51,8 +103,111 @@ function App() {
     </ul>
   );
 
+  const renderContactForm = () => (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-zinc-400 mb-2">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleInputChange}
+          className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          placeholder="Your name"
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-zinc-400 mb-2">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          placeholder="your.email@example.com"
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="message" className="block text-sm font-medium text-zinc-400 mb-2">Message</label>
+        <textarea
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleInputChange}
+          rows={4}
+          className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          placeholder="Your message..."
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className={`w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {isSubmitting ? 'Sending...' : 'Send Message'}
+      </button>
+    </form>
+  );
+
+  const socialLinks = (
+    <ul className="ml-1 mt-8 flex items-center gap-6" aria-label="Social media">
+      <li className="flex">
+        <a 
+          href="https://github.com" 
+          className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <Github className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
+        </a>
+      </li>
+      <li className="flex">
+        <a 
+          href="https://www.linkedin.com/in/raghavkathuria0/" 
+          className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <Linkedin className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
+        </a>
+      </li>
+      <li className="flex">
+        <a 
+          href="mailto:Raghavkathuria69@outlook.com" 
+          className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <Mail className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
+        </a>
+      </li>
+      <li className="flex">
+        <a 
+          href={`tel:${profileData.phone}`}
+          className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <Phone className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
+        </a>
+      </li>
+    </ul>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-900 to-black text-zinc-200">
+      <Toaster position="top-right" />
       {/* 3D Background Canvas */}
       <div className="fixed inset-0 pointer-events-none">
         <Canvas camera={{ position: [0, 0, 10], fov: 75 }}>
@@ -95,36 +250,7 @@ function App() {
             <nav className="mt-16">
               {renderNavigation(true)}
             </nav>
-            <ul className="mt-auto mb-8 flex items-center gap-6" aria-label="Social media">
-              <li className="flex">
-                <a 
-                  href="https://github.com" 
-                  className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Github className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
-                </a>
-              </li>
-              <li className="flex">
-                <a 
-                  href="https://www.linkedin.com/in/raghavkathuria0/" 
-                  className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Linkedin className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
-                </a>
-              </li>
-              <li className="flex">
-                <a 
-                  href="mailto:your.email@example.com" 
-                  className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
-                >
-                  <Mail className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
-                </a>
-              </li>
-            </ul>
+            {socialLinks}
           </div>
         </div>
       )}
@@ -135,7 +261,7 @@ function App() {
           <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
             <div>
               <h1 className="text-5xl font-bold tracking-tight text-zinc-100 sm:text-6xl bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-                Cloud & DevOps Engineer
+                {profileData.title}
               </h1>
               <div className="mt-8 flex items-center gap-4">
                 <div className="h-0.5 w-12 bg-blue-500/50"></div>
@@ -187,42 +313,7 @@ function App() {
               </nav>
             </div>
             
-            <ul className="ml-1 mt-8 flex items-center gap-6" aria-label="Social media">
-              <li className="flex">
-                <a 
-                  href="https://github.com" 
-                  className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                >
-                  <Github className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
-                </a>
-              </li>
-              <li className="flex">
-                <a 
-                  href="https://www.linkedin.com/in/raghavkathuria0/" 
-                  className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                >
-                  <Linkedin className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
-                </a>
-              </li>
-              <li className="flex">
-                <a 
-                  href="mailto:your.email@example.com" 
-                  className="group flex text-sm font-medium p-2 hover:bg-blue-500/10 rounded-lg transition-colors"
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                >
-                  <Mail className="h-5 w-5 text-zinc-500 transition group-hover:text-blue-400" />
-                </a>
-              </li>
-            </ul>
+            {socialLinks}
           </header>
 
           {/* Right column */}
@@ -476,7 +567,7 @@ function App() {
                       onMouseEnter={() => setIsHovered(true)}
                       onMouseLeave={() => setIsHovered(false)}
                     >
-                      <div className="flex items-center gap-4 mb-2">
+                      <div className="flex items-center gap-4  mb-2">
                         <span className="text-sm text-blue-400">{post.date}</span>
                         <span className="text-sm text-zinc-500">·</span>
                         <span className="text-sm text-zinc-500">{post.readTime}</span>
@@ -504,46 +595,30 @@ function App() {
                   <h2 className="text-sm font-bold uppercase tracking-widest text-blue-400">Contact</h2>
                 </div>
                 <div className="max-w-lg">
-                  <p className="text-zinc-400 mb-8">
-                    I'm always interested in hearing about new cloud architecture and DevOps opportunities. Feel free to reach out if you'd like to discuss your infrastructure needs or potential collaboration.
-                  </p>
-                  <form className="space-y-6">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-zinc-400 mb-2">Name</label>
-                      <input
-                        type="text"
-                        id="name"
-                        className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                        placeholder="Your name"
-                      />
+                  <div className="mb-8 space-y-4">
+                    <p className="text-zinc-400">
+                      I'm always interested in hearing about new cloud architecture and DevOps opportunities. Feel free to reach out if you'd like to discuss your infrastructure needs or potential collaboration.
+                    </p>
+                    <div className="flex flex-col space-y-2">
+                      <a 
+                        href={`tel:${profileData.phone}`}
+                        className="flex items-center text-zinc-400 hover:text-blue-400 transition-colors"
+                      >
+                        <Phone className="h-5 w-5 mr-2" />
+                        <span>{profileData.phone}</span>
+                      </a>
+                      <a 
+                        href={`https://wa.me/${profileData.whatsapp.replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center text-zinc-400 hover:text-blue-400 transition-colors"
+                      >
+                        <span className="mr-2">📱</span>
+                        <span>WhatsApp</span>
+                      </a>
                     </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-zinc-400 mb-2">Email</label>
-                      <input
-                        type="email"
-                        id="email"
-                        className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                        placeholder="your.email@example.com"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-zinc-400 mb-2">Message</label>
-                      <textarea
-                        id="message"
-                        rows={4}
-                        className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-lg px-4 py-2 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                        placeholder="Your message..."
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                    >
-                      Send Message
-                    </button>
-                  </form>
+                  </div>
+                  {renderContactForm()}
                 </div>
               </section>
             )}
