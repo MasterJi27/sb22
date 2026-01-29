@@ -1,6 +1,7 @@
 // vite.config.ts (Optimized for Chunk Splitting & Compression)
 
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig({
@@ -17,5 +18,5 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 800, // Increased limit to avoid warnings
   },
-  plugins: [viteCompression()], // Enable Gzip Compression for better performance
+  plugins: [react(), viteCompression()], // Enable React plugin and Gzip Compression
 });
