@@ -18,7 +18,7 @@ This repository is configured with GitHub Actions for automatic deployment to Gi
 
 3. **Access Your Site:**
    - After successful deployment, your portfolio will be live at:
-   - **https://masterji27.github.io/Portfolio/**
+   - **https://MasterJi27.github.io/Portfolio/**
 
 ### Workflow Status:
 Check the deployment status in the **Actions** tab of your repository.
@@ -71,11 +71,16 @@ npx gh-pages -d dist
 If you encounter authentication errors with `npm run deploy`:
 
 1. **Use GitHub Actions** (recommended) - no authentication needed
-2. **Or use Personal Access Token:**
+2. **Or configure Git credentials:**
    ```bash
-   # Set your GitHub token
-   export GH_TOKEN=your_personal_access_token
+   # Set up Git to use your GitHub credentials
+   git config --global credential.helper store
+   # Then run deploy - you'll be prompted for credentials once
    npm run deploy
+   ```
+3. **Or use the token flag:**
+   ```bash
+   npx gh-pages -d dist -t your_personal_access_token
    ```
 
 ### Issue: 404 errors for assets
@@ -126,6 +131,6 @@ export default defineConfig({
    - Install dependencies
    - Build the project
    - Deploy to gh-pages branch
-3. Your site will be live at https://masterji27.github.io/Portfolio/
+3. Your site will be live at https://MasterJi27.github.io/Portfolio/
 
 No manual deployment needed! 🎉
