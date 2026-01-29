@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://MasterJi27.github.io/sb22",
+  "homepage": "https://MasterJi27.github.io/Portfolio",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,11 +13,13 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@react-three/drei": "^9.99.0",
     "@react-three/fiber": "^8.15.16",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.6.0",
     "sb2": "file:",
     "three": "^0.161.0"
   },
