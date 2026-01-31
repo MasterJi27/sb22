@@ -8,7 +8,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  base: '/portfolio/', // Replace 'portfolio' with your repository name
+  base: '/Portfolio/', // GitHub repo name (case-sensitive)
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
